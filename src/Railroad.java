@@ -262,4 +262,4 @@ public class Railroad {
         System.out.println(min);
     }
 }
-//test input: "java Prog.java AB5 BC4 CD8 DC8 DE6 AD5 CE2 EB3 AE7"
+//test input: "java Railroad.java AB5 BC4 CD8 DC8 DE6 AD5 CE2 EB3 AE7"
