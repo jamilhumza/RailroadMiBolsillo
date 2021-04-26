@@ -4,6 +4,8 @@ import java.util.HashMap;
 public class Railroad {
     static int N = 5;
     static final int INF=Integer.MAX_VALUE;
+
+    //Adjacency list representation of directed weighted graph
     class AdjListNode
     {
         private int v;
@@ -13,6 +15,7 @@ public class Railroad {
         int getWeight()  { return weight; }
     }
 
+    //Graph methods for the adjacency list representation
     class Graph
     {
         private int V;
@@ -27,18 +30,16 @@ public class Railroad {
         void addEdge(int u, int v, int weight)
         {
             AdjListNode node = new AdjListNode(v,weight);
-            adj[u].add(node);// Add v to u's list
+            adj[u].add(node);
         }
 
-        // A recursive function used by shortestPath.
-        // See below link for details
+        //Utility function for the shortest path method
         void topologicalSortUtil(int v, Boolean visited[], Stack stack)
         {
-            // Mark the current node as visited.
+
             visited[v] = true;
             Integer i;
 
-            // Recur for all the vertices adjacent to this vertex
             Iterator<AdjListNode> it = adj[v].iterator();
             while (it.hasNext())
             {
@@ -46,42 +47,38 @@ public class Railroad {
                 if (!visited[node.getV()])
                     topologicalSortUtil(node.getV(), visited, stack);
             }
-            // Push current vertex to stack which stores result
+
             stack.push(new Integer(v));
         }
 
-        // The function to find shortest paths from given vertex. It
-        // uses recursive topologicalSortUtil() to get topological
-        // sorting of given graph.
+        //Method to calculate the shortest path between source vertex and destination vertex
         int shortestPath(int s, int d)
         {
             Stack stack = new Stack();
             int dist[] = new int[V];
 
-            // Mark all the vertices as not visited
+
             Boolean visited[] = new Boolean[V];
             for (int i = 0; i < V; i++)
                 visited[i] = false;
 
-            // Call the recursive helper function to store Topological
-            // Sort starting from all vertices one by one
+
             for (int i = 0; i < V; i++)
                 if (visited[i] == false)
                     topologicalSortUtil(i, visited, stack);
 
-            // Initialize distances to all vertices as infinite and
-            // distance to source as 0
+
             for (int i = 0; i < V; i++)
                 dist[i] = INF;
             dist[s] = 0;
 
-            // Process vertices in topological order
+
             while (stack.empty() == false)
             {
-                // Get the next vertex from topological order
+
                 int u = (int)stack.pop();
 
-                // Update distances of all adjacent vertices
+
                 Iterator<AdjListNode> it;
                 if (dist[u] != INF)
                 {
@@ -96,29 +93,17 @@ public class Railroad {
             }
 
             return dist[d];
-            // Print the calculated shortest distances
-            /*for (int i = 0; i < V; i++)
-            {
-                if (dist[i] == INF)
-                    System.out.print( "INF ");
-                else
-                    System.out.print( dist[i] + " ");
-            }*/
+
         }
     }
 
-    // Method to create a new graph instance through an object
-    // of ShortestPath class.
+    //Create a new graph with adjacency list representation
     Graph newGraph(int number)
     {
         return new Graph(number);
     }
 
-
-
-
-
-
+    //Hash table that allows us to parse the input string (ex.AB5) and convert it to integers
     public static Map<Character, Integer> letters;
     static {
         letters = new HashMap<>();
@@ -129,6 +114,7 @@ public class Railroad {
         letters.put('E', 4);
     }
 
+    //Calculates the distance for a certain route
     static int distanceRoute(int[][] graph, String route) {
         int distance = 0;
         int[] a = new int[route.length()];
@@ -148,11 +134,9 @@ public class Railroad {
         return distance;
     }
 
+    //Utility function for calculating exponent of a matrix
     static void multiply(int a[][], int b[][])
     {
-        // Creating an auxiliary matrix to
-        // store elements of the
-        // multiplication matrix
         int mul[][] = new int[N][N];
         for (int i = 0; i < N; i++)
         {
@@ -165,15 +149,12 @@ public class Railroad {
             }
         }
 
-        // storing the multiplication
-        // result in a[][]
         for (int i=0; i<N; i++)
             for (int j=0; j<N; j++)
-
-                // Updating our matrix
                 a[i][j] = mul[i][j];
     }
 
+    //Calculating a matrix raised to a power n
     static void power(int F[][], int n)
     {
         int M[][] = new int[N][N];
@@ -183,9 +164,6 @@ public class Railroad {
             }
         }
 
-        // Multiply it with initial values
-        // i.e with F(0) = 0, F(1) = 1,
-        // F(2) = 1
         if (n == 1)
             return;
 
@@ -196,12 +174,10 @@ public class Railroad {
         if (n%2 != 0)
             multiply(F, M);
 
-        // Multiply it with initial values
-        // i.e with F(0) = 0, F(1) = 1,
-        // F(2) = 1
         return;
     }
 
+    //Method that reverts a matrix back to its original form after altering
     static void revert(int one[][], int two[][]) {
         for (int i = 0; i < N; i++)
         {
@@ -215,7 +191,6 @@ public class Railroad {
         }
     }
 
-
     public static void main(String[] args) throws Exception {
         Railroad t = new Railroad();
         Graph g = t.newGraph(N);
@@ -225,6 +200,7 @@ public class Railroad {
         int y = 0;
         int z = 0;
 
+        //Parse the inputs and convert to two adjacency matrices and one adjacency list
         for(int i=0; i < args.length; i++) {
             x = letters.get(args[i].charAt(0));
             y = letters.get(args[i].charAt(1));
@@ -233,12 +209,8 @@ public class Railroad {
             graph2[x][y] = 1;
             g.addEdge(x, y, z);
         }
-        //{ {0, 5, 0, 5, 7},
-        //{0, 0, 4, 0, 0},
-        //{0, 0, 0, 8, 2},
-        //{0, 0, 8, 0, 6},
-        //{0, 3, 0, 0, 0}
-        //};
+
+        //Calculate the required distances for outputs 1-5
         int[] distances = {distanceRoute(graph1, "ABC"), distanceRoute(graph1, "AD"), distanceRoute(graph1, "ADC"), distanceRoute(graph1, "AEBCD"), distanceRoute(graph1, "AED") };
         for (int i = 0; i < distances.length; i++) {
             if (distances[i] == 0) {
@@ -252,25 +224,26 @@ public class Railroad {
         int tripsCC = 0;
         int tripsAC = 0;
 
+        //Calculating the number of trips for output 6
         tripsCC += graph2[2][2];
         power(graph2, 2);
         tripsCC += graph2[2][2];
-
         revert(graph1, graph2);
-
         power(graph2, 3);
         tripsCC += graph2[2][2];
+        System.out.println(tripsCC);
 
-
+        //Calculating the number of trips for output 7
         revert(graph1, graph2);
         power(graph2, 4);
         tripsAC = graph2[0][2];
         revert(graph1, graph2);
-        System.out.println(tripsCC);
         System.out.println(tripsAC);
 
+        //Calculating the shortest route for output 8
         System.out.println(g.shortestPath(0, 2));
 
+        //Calculating the shortest route for output 9
         int[] helper = new int[N];
         int[] sums = new int[N];
         for (int i = 0; i < helper.length; i++) {
@@ -287,12 +260,6 @@ public class Railroad {
             }
         }
         System.out.println(min);
-
-        power(graph2, 6);
-        int tripsCC2 = 0;
-
-        tripsCC2 += graph2[2][2];
-        System.out.println(tripsCC2);
     }
 }
 //test input: "java Prog.java AB5 BC4 CD8 DC8 DE6 AD5 CE2 EB3 AE7"
